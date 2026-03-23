@@ -1,6 +1,5 @@
-//version 1
-
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 class Item {
     protected String name;
@@ -33,13 +32,17 @@ class Painkillers extends Item {
 
     public void update() {
         Scanner sc = new Scanner(System.in);
-        setDetails();
-        System.out.print("Enter expiry date: ");
-        expiryDate = sc.next();
-        System.out.print("Enter age group: ");
-        ageGroup = sc.next();
+        try {
+            setDetails();
+            System.out.print("Enter expiry date: ");
+            expiryDate = sc.next();
+            System.out.print("Enter age group: ");
+            ageGroup = sc.next();
+        } catch (Exception e) {
+            System.out.println("Invalid input! Please re-enter details.");
+            update(); // retry
+        }
     }
-
 
     @Override
     public void display() {
@@ -58,14 +61,26 @@ class Bandages extends Item {
 
     public void update() {
         Scanner sc = new Scanner(System.in);
-        setDetails();
-        System.out.print("Enter expiry date: ");
-        expiryDate = sc.next();
-        System.out.print("Enter age group: ");
-        ageGroup = sc.next();
-        System.out.print("Is it waterproof (y/n): ");
-        waterproof = sc.next().charAt(0);
+        try {
+            setDetails();
+            System.out.print("Enter expiry date: ");
+            expiryDate = sc.next();
+            System.out.print("Enter age group: ");
+            ageGroup = sc.next();
+
+            System.out.print("Is it waterproof (y/n): ");
+            waterproof = sc.next().charAt(0);
+
+            if (waterproof != 'y' && waterproof != 'n') {
+                throw new Exception("Invalid input for waterproof!");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+            update(); // retry
+        }
     }
+
 
     @Override
     public void display() {
@@ -82,9 +97,14 @@ class Equipment extends Item {
 
     public void update() {
         Scanner sc = new Scanner(System.in);
-        setDetails();
-        System.out.print("Enter item weight (lbs): ");
-        weight = sc.nextDouble();
+        try {
+            setDetails();
+            System.out.print("Enter item weight (lbs): ");
+            weight = sc.nextDouble();  // may throw InputMismatchException
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input! Weight must be a number.");
+            update(); // retry
+        }
     }
 
     @Override
@@ -95,7 +115,7 @@ class Equipment extends Item {
     }
 }
 
-public class inventorySystem {
+public class InventorySystem {
     public static void main(String[] args) {
         Painkillers p = new Painkillers();
         Bandages b = new Bandages();
